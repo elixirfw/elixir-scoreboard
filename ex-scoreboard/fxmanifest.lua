@@ -3,13 +3,19 @@ game 'gta5'
 
 author 'Elixir FW'
 description 'ex-scoreboard for QBCORE'
-version '1.2.0'
+version '1.5.0'
 
 client_scripts {
+   'cfg.lua',
    'cl_scoreboard.lua',
    'warmenu.lua'
 }
 
 server_scripts {
-   'sv_scoreboard.lua'
+   'cfg.lua',
+   'sv_scoreboard.lua',
+}
+
+shared_scripts {
+   'cfg.lua',
 }
