@@ -6,7 +6,7 @@
 
 Its a NoPixel inspired/Styled Scoreboard working with QBCore.
 
-Discord:- https://discord.gg/JMTPdBV
+Discord:- https://discord.gg/XUgqMY4GDt
 
 # ex-scoreboard Preview
 
