@@ -8,7 +8,6 @@ end)
 
 RegisterNetEvent("QBCore:Client:OnPlayerLoaded")
 AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
-    print("??")
     TriggerServerEvent("st-scoreboard:AddPlayer")
 end)
 
@@ -88,7 +87,11 @@ Citizen.CreateThread(function()
             local playerId = GetPlayerFromServerId(v.src)
 
             if NetworkIsPlayerActive(playerId) or GetPlayerPed(playerId) == GetPlayerPed(-1) then
+                if Config.SteamHex then
                 if WarMenu.MenuButton("[" .. v.src .. "] " .. v.comid .. " ", "options") then ST._Scoreboard.SelectedPlayer = v end
+                else
+                    if WarMenu.MenuButton("[" .. v.src .. "] " .. v.lcomid .. " ", "options") then ST._Scoreboard.SelectedPlayer = v end
+                end
             else
                 if WarMenu.MenuButton("[" .. v.src .. "] - instanced?", "options", {r = 255, g = 0, b = 0, a = 255}) then ST._Scoreboard.SelectedPlayer = v end
             end
@@ -107,11 +110,18 @@ Citizen.CreateThread(function()
     end
 
     local function DrawOptions()
-        if group ~= "user" then
-            -- if WarMenu.Button("Name:", ST._Scoreboard.SelectedPlayer.name) then end
+        if Config.ShowName then
+        if WarMenu.Button("Name:", ST._Scoreboard.SelectedPlayer.name) then end
         end
+        if Config.SteamHex then
         if WarMenu.Button("Steam ID:", ST._Scoreboard.SelectedPlayer.steamid) then end
+        end
+        if WarMenu.Button("Citizen ID:", ST._Scoreboard.SelectedPlayer.cid) then end
+        if Config.SteamHex then
         if WarMenu.Button("Community ID:", ST._Scoreboard.SelectedPlayer.comid) then end
+        else
+        if WarMenu.Button("Lic:", ST._Scoreboard.SelectedPlayer.lcomid) then end
+        end
         if WarMenu.Button("Server ID:", ST._Scoreboard.SelectedPlayer.src) then end
     end
 
@@ -195,12 +205,12 @@ Citizen.CreateThread(function()
         if IsControlPressed(0, 303) then
             if not IsAnyMenuOpen() then
                 ST.Scoreboard.Menu:Open()
-                TriggerEvent('animations:client:EmoteCommandStart', {"think"})
+      --          TriggerEvent('animations:client:EmoteCommandStart', {"think"})
             end
         else
             if IsAnyMenuOpen() then
                 ST.Scoreboard.Menu:Close()
-                TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+         --       TriggerEvent('animations:client:EmoteCommandStart', {"c"})
             end
             Citizen.Wait(100)
         end
@@ -299,7 +309,10 @@ Citizen.CreateThread(function()
                     local ped = GetPlayerPed(id)
                     local playerCoords = GetPedBoneCoords(playerped, HeadBone)
                     if ped == playerped then
+                        if Config.ShowIdOnHead then
                         DrawText3DTalking(playerCoords.x, playerCoords.y, playerCoords.z+0.5, " ".. GetPlayerServerId(id) .. " ", {255, 255, 255, 255})
+                        else
+                        end
                     else
                         local pedCoords = GetPedBoneCoords(ped, HeadBone)
                         local distance = math.floor(#(playerCoords - pedCoords))
@@ -342,3 +355,5 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
+----- ELixir -----
