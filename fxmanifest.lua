@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'Elixir FW'
 description 'ex-scoreboard for QBCORE'
-version '1.5.0'
+version '1.5.4'
 
 client_scripts {
    'cfg.lua',
