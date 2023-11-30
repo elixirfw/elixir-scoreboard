@@ -12,26 +12,58 @@ QBCore.Functions.CreateCallback('shitidk', function(source, cb)
     cb(group)
 end)
 
+if Config.SteamHex then
 RegisterServerEvent('st-scoreboard:AddPlayer')
 AddEventHandler("st-scoreboard:AddPlayer", function()
 
     local identifiers, steamIdentifier = GetPlayerIdentifiers(source)
     for _, v in pairs(identifiers) do
-        if string.find(v, "license") then
+        if string.find(v, "steam") then
             steamIdentifier = v
             break
         end
     end
 
-    local stid = "test"
+    local stid = HexIdToSteamId(steamIdentifier)
     local ply = GetPlayerName(source)
-    local scomid = steamIdentifier:gsub("license:", "")
-    local data = { src = source, steamid = stid, comid = scomid, name = ply }
+    local scomid = steamIdentifier:gsub("steam:", "")
+    local ply2 = QBCore.Functions.GetPlayer(source)
+    local citizenid = ply2.PlayerData.citizenid
+    local data = { src = source, steamid = stid, cid = citizenid, comid = scomid, name = ply }
 
     TriggerClientEvent("st-scoreboard:AddPlayer", -1, data )
     ST.Scoreboard.AddAllPlayers()
 end)
+end
 
+if Config.SteamHex then
+function ST.Scoreboard.AddAllPlayers(self)
+    local xPlayers   = QBCore.Functions.GetPlayers()
+
+    for i=1, #xPlayers, 1 do
+        
+        local identifiers, steamIdentifier = GetPlayerIdentifiers(xPlayers[i])
+        for _, v in pairs(identifiers) do
+            if string.find(v, Config.Identifier) then
+                steamIdentifier = v
+                break
+            end
+        end
+
+        local stid = HexIdToSteamId(steamIdentifier)
+        local ply = GetPlayerName(xPlayers[i])
+        local scomid = steamIdentifier:gsub("steam:", "")
+        local ply2 = QBCore.Functions.GetPlayer(source)
+        local citizenid = ply2.PlayerData.citizenid
+        local data = { src = xPlayers[i], steamid = stid, cid = citizenid, comid = scomid, name = ply }
+
+        TriggerClientEvent("st-scoreboard:AddAllPlayers", source, data, recentData)
+
+    end
+end
+end
+
+if not Config.SteamHex then
 function ST.Scoreboard.AddAllPlayers(self)
     local xPlayers   = QBCore.Functions.GetPlayers()
 
@@ -45,15 +77,42 @@ function ST.Scoreboard.AddAllPlayers(self)
             end
         end
 
-        -- local stid = HexIdToSteamId(steamIdentifier)
+        local stid = HexIdToSteamId(steamIdentifier)
         local ply = GetPlayerName(xPlayers[i])
         local scomid = steamIdentifier:gsub("license:", "")
-        local data = { src = xPlayers[i], steamid = stid, comid = scomid, name = ply }
+        local ply2 = QBCore.Functions.GetPlayer(source)
+        local citizenid = ply2.PlayerData.citizenid
+        local data = { src = xPlayers[i], name = ply, cid = citizenid, lcomid = scomid }
 
         TriggerClientEvent("st-scoreboard:AddAllPlayers", source, data, recentData)
 
     end
 end
+end
+
+if not Config.SteamHex then
+    RegisterServerEvent('st-scoreboard:AddPlayer')
+    AddEventHandler("st-scoreboard:AddPlayer", function()
+    
+        local identifiers, steamIdentifier = GetPlayerIdentifiers(source)
+        for _, v in pairs(identifiers) do
+            if string.find(v, "license") then
+                steamIdentifier = v
+                break
+            end
+        end
+    
+        -- local stid = "test"
+        local ply = GetPlayerName(source)
+        local scomid = steamIdentifier:gsub("license:", "")
+        local ply2 = QBCore.Functions.GetPlayer(source)
+        local citizenid = ply2.PlayerData.citizenid
+        local data = { src = source, cid = citizenid, lcomid = scomid, name = ply }
+    
+        TriggerClientEvent("st-scoreboard:AddPlayer", -1, data )
+        ST.Scoreboard.AddAllPlayers()
+    end)
+    end
 
 function ST.Scoreboard.AddPlayerS(self, data)
     ST._Scoreboard.PlayersS[data.src] = data
@@ -71,8 +130,10 @@ AddEventHandler("playerDropped", function()
     local stid = HexIdToSteamId(steamIdentifier)
     local ply = GetPlayerName(source)
     local scomid = steamIdentifier:gsub("steam:", "")
+    local ply2 = QBCore.Functions.GetPlayer(source)
+    local citizenid = ply2.PlayerData.citizenid
     local plyid = source
-    local data = { src = source, steamid = stid, comid = scomid, name = ply }
+    local data = { src = source, steamid = stid, cid = citizenid, comid = scomid, name = ply }
 
     TriggerClientEvent("st-scoreboard:RemovePlayer", -1, data )
     Wait(600000)
