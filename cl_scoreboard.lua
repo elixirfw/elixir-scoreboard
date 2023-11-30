@@ -191,6 +191,7 @@ function ST.Scoreboard.Menu.Close(self)
     end
 end
 
+if not Config.UseEmotes then
 Citizen.CreateThread(function()
     local function IsAnyMenuOpen()
         for k,v in pairs(ST._Scoreboard.Menus) do
@@ -216,6 +217,35 @@ Citizen.CreateThread(function()
         end
     end
 end)
+end
+
+if Config.UseEmotes then
+Citizen.CreateThread(function()
+    local function IsAnyMenuOpen()
+        for k,v in pairs(ST._Scoreboard.Menus) do
+            if WarMenu.IsMenuOpened(k) then return true end
+        end
+
+        return false
+    end
+
+    while true do
+        Citizen.Wait(0)
+        if IsControlPressed(0, 303) then
+            if not IsAnyMenuOpen() then
+                ST.Scoreboard.Menu:Open()
+               ExecuteCommand('e phone')
+            end
+        else
+            if IsAnyMenuOpen() then
+                ST.Scoreboard.Menu:Close()
+               ExecuteCommand('e c')
+            end
+            Citizen.Wait(100)
+        end
+    end
+end)
+end
 
 RegisterNetEvent("st-scoreboard:RemovePlayer")
 AddEventHandler("st-scoreboard:RemovePlayer", function(data)
